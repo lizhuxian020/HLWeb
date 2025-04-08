@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {ref, reactive} from "vue";
 import { ElForm, ElFormItem, ElButton, ElInput  } from "element-plus";
+import { User,  Lock} from '@element-plus/icons-vue'
 
-const dataForms = ref()
+const formRef = ref()
 const dataForm = reactive({
   account: '',
   password: '',
@@ -33,14 +34,8 @@ const rules = reactive({
   password: [
     {
       required: true,
-      validator: validatePass,
-      trigger: 'blur',
-    },
-  ],
-  captcha: [
-    {
-      required: true,
-      message: '请输入验证码',
+      // validator: validatePass,
+      message: '请输入密码',
       trigger: 'blur',
     },
   ],
@@ -48,7 +43,14 @@ const rules = reactive({
 
 
 function clickLogin() {
-  console.log('clickLogin')
+  formRef.value.validate((valid: boolean) => {
+    if (!valid) {
+      return
+    }
+    let account = dataForm.account;
+    let password = dataForm.password;
+    console.log(account + password);
+  })
 }
 </script>
 
@@ -56,12 +58,32 @@ function clickLogin() {
   <div class="login-layout">
     <div class="login-layout-content">
       <div class="login-layout-test">
-        <el-form>
-          <el-form-item>
-            <el-input style="width: 100%; height: 40px " placeholder="请输入账号"/>
+        <el-form :model="dataForm" :rules="rules" ref="formRef">
+          <el-form-item prop="account">
+            <el-input class="login-layout-input"
+                      placeholder="请输入账号"
+                      v-model="dataForm.account"
+            >
+              <template #prefix>
+                <el-icon><User/></el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input class="login-layout-input"
+                      placeholder="请输入密码"
+                      type="password"
+                      v-model="dataForm.password"
+            >
+              <template #prefix>
+                <el-icon><Lock/></el-icon>
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button>登录</el-button>
+            <el-button class="login-layout-button"
+                       @click="clickLogin"
+            >登录</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -81,15 +103,21 @@ function clickLogin() {
   display: flex;
   align-items: center;
   justify-content: center;
-  user-select: none;
+  //user-select: none;
 
   &-content {
     width: 368px;
-    background-color: red;
   }
 
-  &-test {
-
+  &-input {
+    height: 40px;
   }
+
+  &-button {
+    width: 100%;
+    height: 40px;
+    font-size: 16px;
+  }
+
 }
 </style>
