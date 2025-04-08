@@ -1,5 +1,6 @@
 import App from './App.vue'
 import {createApp} from 'vue'
+import store from './store'
 
 //需要引入ElementPlus和以下这句, 来实现引用对应组件的css
 import 'element-plus/dist/index.css'
@@ -10,5 +11,5 @@ import ElementPlus from 'element-plus'
 
 const app = createApp(App)
 
-app.use(router).use(ElementPlus)
+app.use(router).use(store).use(ElementPlus)
 app.mount('#emp-root')

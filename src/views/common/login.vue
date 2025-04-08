@@ -2,15 +2,14 @@
 import {ref, reactive} from "vue";
 import { ElForm, ElFormItem, ElButton, ElInput  } from "element-plus";
 import { User,  Lock} from '@element-plus/icons-vue'
+import service from "../../service/http";
+import {useStore} from "vuex";
+import {useRouter} from "vue-router";
 
 const formRef = ref()
 const dataForm = reactive({
   account: '',
   password: '',
-  key: '',
-  captcha: '',
-  wsClient: 'web',
-  applicationId: 1, //关联产品时需要，勿删
 })
 let validatePass = (rule: any, value: any, callback: any) => {
   if (value === '') {
@@ -40,16 +39,30 @@ const rules = reactive({
     },
   ],
 })
-
+const store = useStore();
+const $router = useRouter();
 
 function clickLogin() {
-  formRef.value.validate((valid: boolean) => {
+  formRef.value.validate(async (valid: boolean) => {
     if (!valid) {
       return
     }
     let account = dataForm.account;
     let password = dataForm.password;
     console.log(account + password);
+    let res = await service.request({
+      method: 'post',
+      url: '/user/login',
+      data: dataForm,
+    })
+    console.log('---' + res)
+    if (res.data.token) {
+      await store.dispatch('user/setUserInfo', res.data)
+      await store.dispatch('user/setToken', res.data.token)
+      await $router.push({ name: 'home' })
+    }
+
+
   })
 }
 </script>
