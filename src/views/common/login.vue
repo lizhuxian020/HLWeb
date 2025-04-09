@@ -55,7 +55,6 @@ function clickLogin() {
       url: '/user/login',
       data: dataForm,
     })
-    console.log('---' + res)
     if (res.data.token) {
       await store.dispatch('user/setUserInfo', res.data)
       await store.dispatch('user/setToken', res.data.token)

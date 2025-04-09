@@ -1,10 +1,11 @@
 <template>
-  <router-view >
-  </router-view>
-
+  <ErrorBoundary>
+    <router-view />
+  </ErrorBoundary>
 </template>
 
 <script lang="ts" setup>
+import ErrorBoundary from '@/views/common/ErrorBoundary.vue'
 </script>
 
 <style scoped>

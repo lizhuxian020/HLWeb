@@ -11,5 +11,14 @@ import ElementPlus from 'element-plus'
 
 const app = createApp(App)
 
+app.config.errorHandler = (err) => {
+    console.log("捕获到全局错误: " + err)
+}
+
 app.use(router).use(store).use(ElementPlus)
 app.mount('#emp-root')
+
+window.addEventListener('unhandledrejection', event => {
+    console.log('全局未捕获 Promise 错误：', event.reason)
+    event.preventDefault()
+})
