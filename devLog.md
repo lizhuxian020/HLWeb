@@ -33,3 +33,7 @@
 6. 明天研究:
    7. 阿波罗每个route的分布, 和登录校验逻辑.
    8. 顺便搞清楚localStorage, sessionStorage是什么东西
+
+4.10
+1. 首页导航栏基本布局
+2. 使用less全局变量. 但目前需要主动引用, ai说配置additionalData可以不用主动引入, 但是失败

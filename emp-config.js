@@ -1,5 +1,7 @@
 import Vue3 from '@empjs/plugin-vue3'
 import {defineConfig} from '@empjs/cli'
+import path from 'path'
+
 
 export default defineConfig(({mode, env}) => {
   return {
@@ -24,6 +26,19 @@ export default defineConfig(({mode, env}) => {
           requiredVersion: '^3',
         },
       },
-    }
+    },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src/'),
+      },
+    },
+
+    css: {
+      loaderOptions: {
+        less: {
+          additionalData: `@import "@/assets/css/variable.less";`,
+        },
+      },
+    },
   }
 })

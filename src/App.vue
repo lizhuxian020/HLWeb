@@ -15,5 +15,6 @@ body {
   margin: 0;
   height: 100vh;
   width: 100%;
+  min-width: 1100px;
 }
 </style>
