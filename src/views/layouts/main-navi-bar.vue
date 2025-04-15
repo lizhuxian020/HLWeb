@@ -5,7 +5,7 @@ import {House, User} from "@element-plus/icons-vue";
 </script>
 
 <template>
-  <nav style="height: 50px; background-color: rebeccapurple; width: 100%">
+  <nav style="height: 50px; background-color: rebeccapurple; width: 100%; user-select: none;">
     <div style="display: flex; height: 100%; align-items: center">
       <div style="background-color: darkgoldenrod; width: 80px; height: 100%; display: flex; align-items: center; justify-content: center;">
         <el-icon ><House /></el-icon>
