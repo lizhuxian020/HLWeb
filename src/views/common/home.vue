@@ -27,11 +27,7 @@ let firMenu = allRoutes.filter((route)=>{
   return route.name == "home";
 })[0].children;
 
-let secMenu : Ref = ref([])
-
-watch(expand, (val) => {
-  console.log(val);
-})
+let secMenu : Ref<RouteRecordRaw[]> = ref([] as RouteRecordRaw[])
 
 onMounted(() => {
   setTimeout(()=>{
@@ -46,8 +42,10 @@ function clickArrow() {
 }
 
 function onClickFirMenu(item: RouteRecordRaw, index: number) {
+  menuActive.value = String(item.name)
   expand.value = true
-  secMenu.value = item.children;
+  secMenu.value = item.children || [];
+  onClickSecMenu(secMenu.value[0], 0)
 }
 
 function onClickSecMenu(item: RouteRecordRaw, index: number) {
@@ -55,41 +53,48 @@ function onClickSecMenu(item: RouteRecordRaw, index: number) {
   router.push({name: item.name, query: {index: index}});
 }
 
+let menuActive = ref("")
+
+onMounted(() => {
+  // onClickFirMenu(firMenu[0], 0)
+  // onClickSecMenu(secMenu.value[0], 0)
+})
 
 </script>
 
 <template>
-  <main class="main" element-loading-text="加载中, 请稍后..." v-loading="loading" style="height: 100%">
+  <main class="main" element-loading-text="加载中, 请稍后..." v-loading="loading" style="height: 100%; display: flex; flex-direction: column;">
     <template v-if="!loading">
       <main-navi-bar/>
-      <section style="height: 100%; background-color: chartreuse;display: flex">
+      <section style="height: 100%; background-color: chartreuse;display: flex; flex: 1">
         <aside style="height: 100%; background-color: gold; display:flex; user-select: none;">
           <nav style="background-color: #4191F1; height: 100%; width: 80px">
-            <div style="width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-top: 15px" @click="clickArrow">
+            <div style="width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-top: 15px; cursor: pointer;"
+                 @click="clickArrow">
               <el-icon style="font-size: 40px">
                 <Expand v-if="expand"/>
                 <Fold v-else/>
               </el-icon>
             </div>
             <ul style="padding: 0; margin: 0;">
-              <li v-for="(item,index) in firMenu" :key="index" @click="onClickFirMenu(item, index)" style="list-style: none; flex-direction: column; display: flex; align-items: center; padding-top: 15px">
+              <li v-for="(item,index) in firMenu" :key="index" @click="onClickFirMenu(item, index)"
+                  style="list-style: none; flex-direction: column; display: flex; align-items: center; padding-top: 15px; cursor: pointer;"
+                  :style="item.name === menuActive ? {backgroundColor: '#1f62b2'} : {}"
+              >
                 <el-icon><User/></el-icon>
                 <span>{{item.name}}</span>
               </li>
             </ul>
           </nav>
-          <nav style="background-color: #545c64; height: 100%; width: 180px; transition: all 0.3s; overflow: hidden;" :style="[expand ? {width: '180px'} : {width: '0px'}, ]">
+          <nav style="background-color: white; height: 100%; width: 180px; transition: all 0.3s; overflow: hidden;" :style="[expand ? {width: '180px'} : {width: '0px'}, ]">
             <el-menu
                 default-active="0"
-                class="el-menu-vertical-demo"
-                text-color="#fff"
-                active-text-color="#ffd04b"
-                background-color="#545c64"
+                text-color="#666666"
                 style="width: 200px"
             >
               <ul style="padding: 0">
                 <li v-for="(item,index) in secMenu" :key="index" style="list-style: none" @click="onClickSecMenu(item, index)">
-                  <el-menu-item :index="String(index)">
+                  <el-menu-item :index="String(index)" v-if="!item.meta || !item.meta.hidden">
                     <el-icon><House /></el-icon>
                     <span>{{ item.name }}</span>
                   </el-menu-item>
@@ -98,8 +103,8 @@ function onClickSecMenu(item: RouteRecordRaw, index: number) {
             </el-menu>
           </nav>
         </aside>
-        <div style="height: 100%; background-color: darkgreen; flex: 1; flex-direction: column;">
-          <section style="height: 100%; background-color: gold; display: flex; flex-direction: column">
+        <div style="height: 100%; background-color: darkgreen; flex: 1; flex-direction: column;overflow: auto;">
+          <section style="height: 100%; background-color: #eeeeee; display: flex; flex-direction: column">
             <router-view/>
           </section>
         </div>
@@ -109,5 +114,13 @@ function onClickSecMenu(item: RouteRecordRaw, index: number) {
 </template>
 
 <style scoped lang="less">
+@import "@/assets/css/variable.less";
 
+:deep(.el-menu-item.is-active) {
+  background-color: @primary-color !important;
+  color: #fff !important;
+}
+:deep(.el-menu-item:hover) {
+  background-color: #ffe58f;
+}
 </style>

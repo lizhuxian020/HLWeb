@@ -58,6 +58,26 @@ const layoutRoutes = [
                         component: () => import('@/views/pages/user-page.vue'),
                     }
                 ]
+            },
+            {
+                path: 'building',
+                name: 'building',
+                redirect: '/home/building/building1',
+                children: [
+                    {
+                        path: 'building1',
+                        name: 'building1',
+                        component: () => import('@/views/pages/building/building-info-page.vue'),
+                    },
+                    {
+                        path: 'building2',
+                        name: 'building-info-add',
+                        meta: {
+                            hidden: true,
+                        },
+                        component: () => import('@/views/pages/building/building-info-add-page.vue'),
+                    }
+                ]
             }
         ]
     }
@@ -66,6 +86,20 @@ const layoutRoutes = [
 const router = createRouter({
     history: createWebHashHistory(),
     routes: layoutRoutes,
+})
+
+router.beforeEach((to, from, next) => {
+    let whiteList = ['/login', '/404']
+    if (whiteList.indexOf(to.path) !== -1) {
+        next();
+        return;
+    }
+    let data = sessionStorage.getItem('vuex')
+    if (!data) {
+        next(`/login?redirect=${to.path}`);
+        return;
+    }
+    next()
 })
 
 export default router

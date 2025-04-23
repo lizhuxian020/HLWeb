@@ -4,7 +4,7 @@ import { ElForm, ElFormItem, ElButton, ElInput  } from "element-plus";
 import { User,  Lock} from '@element-plus/icons-vue'
 import service from "../../service/http";
 import {useStore} from "vuex";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 
 const formRef = ref()
 const dataForm = reactive({
@@ -41,15 +41,13 @@ const rules = reactive({
 })
 const store = useStore();
 const $router = useRouter();
+const route = useRoute();
 
 function clickLogin() {
   formRef.value.validate(async (valid: boolean) => {
     if (!valid) {
       return
     }
-    let account = dataForm.account;
-    let password = dataForm.password;
-    console.log(account + password);
     let res = await service.request({
       method: 'post',
       url: '/user/login',
@@ -58,9 +56,10 @@ function clickLogin() {
     if (res.data.token) {
       await store.dispatch('user/setUserInfo', res.data)
       await store.dispatch('user/setToken', res.data.token)
-      await $router.push({ name: 'home' })
+      const targetPath = String(route.query.redirect || '/home');
+      console.log("targetPath" + targetPath);
+      await $router.push({ path: targetPath })
     }
-
 
   })
 }
