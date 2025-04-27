@@ -34,7 +34,18 @@ service.interceptors.response.use(async (response) => {
     return response.data;
 }, (error) => {
     console.log('httpResponseError' + error);
-    return Promise.reject(error);
+    ElMessage.error(error.message);
+    // return Promise.reject(error);
+    /*
+    返回正常, 避免跳红屏
+     */
+    return {code:500, message: "请求失败, 请稍后再试", data: {}};
+    // 返回一个 resolved Promise，防止 Promise 被 reject 而引发“红屏”
+    // return Promise.resolve({
+    //     error: true,
+    //     message: error.response?.data?.message || '网络请求出错',
+    //     status: error.response?.status || 500
+    // });
 })
 
 export default service;

@@ -5,6 +5,7 @@ import type {FormItem, FormSelectItem} from "../../../ts/global";
 import {useRouter} from "vue-router";
 import {onMounted, reactive, ref} from "vue";
 import service from "../../../service/http";
+import {ElMessage} from "element-plus";
 
 let router = useRouter()
 
@@ -108,9 +109,19 @@ let formData: FormItem[] = [
 ]
 
 
-function clickSubmit(result: any) {
-  console.log(result)
-  // router.replace('/home/building/building1')
+async function clickSubmit(formData: any) {
+  console.log(formData)
+
+  let {data: result} = await service.request({
+    method: "post",
+    url: "/buildingInfo/save",
+    data: formData
+  })
+  if (result.flag) {
+    router.replace('/home/building/building1')
+  } else {
+    ElMessage.error("提交失败")
+  }
 }
 
 function clickCancel() {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
+import {onMounted, reactive, ref} from 'vue'
 import service from "../../../service/http";
 import type {TableColumn, Building, TableActionButton} from '../../../ts/global'
 import NormalTableView from "../../components/table/normal-table-view.vue";
@@ -13,6 +13,7 @@ const columns: TableColumn<Building>[] = [
   {
     prop: 'buildingId',
     label: '楼栋id',
+    fixed: 'left'
   },
   {
     prop: 'name',
@@ -42,8 +43,8 @@ const columns: TableColumn<Building>[] = [
     prop: 'propertyFee',
   },
   {
-    prop: '描述',
-    label: "description"
+    prop: 'description',
+    label: "描述"
   },
   {
     label: '村',
@@ -59,24 +60,38 @@ const columns: TableColumn<Building>[] = [
   },
   {
     label: '是否带电梯',
-    prop: "elevator"
+    prop: "elevator",
+
   },
+  {
+    label: "操作",
+    prop: "btn",
+    fixed: 'right',
+    // width: '300px',
+    btnTexts: ["编辑", "删除"],
+    clickBtn: (row, idx) => {
+      console.log(row);
+      console.log(idx)
+    }
+  }
 ]
 
 let router = useRouter()
 
 async function getData() {
-  let userList = await service.request({
-    method: 'GET',
-    url: '/user/list'
+  let {data: buildingData} = await service.request({
+    method: 'POST',
+    url: '/buildingInfo/list',
+    data: params
   })
-  if (userList.data) {
-    tableData.value = userList.data;
+  if (buildingData) {
+    tableData.value = buildingData.records;
+    total.value = buildingData.total || 0;
   }
 }
 
 onMounted( async () => {
-  // await getData()
+  await getData()
 })
 
 let addAction: TableActionButton = {
@@ -85,14 +100,36 @@ let addAction: TableActionButton = {
     router.push({name: "building-info-add"})
   }
 }
+
+const params = reactive({
+  current: 1,
+  size: 10,
+})
+const total = ref(0)
+
+function handleSizeChange(size: number) {
+  params.size = size;
+  getData()
+}
+
+function handleCurrentChange(current: number) {
+  params.current = current;
+  getData()
+}
 </script>
 
 <template>
   <section style="flex:1;display: flex;flex-direction: column; margin: 20px; padding:20px; background-color: white">
-    <NormalTableView :data-source="tableData" :columns="columns" :add-action="addAction" >
-    </NormalTableView>
-
-    <button @click="getData">add</button>
+    <NormalTableView
+        :data-source="tableData"
+        :columns="columns"
+        :add-action="addAction"
+        :total="total"
+        :currentPage="params.current"
+        :size="params.size"
+        :handle-current-change="handleCurrentChange"
+        :handle-size-change="handleSizeChange"
+    />
   </section>
 </template>
 

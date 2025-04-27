@@ -74,6 +74,7 @@ function clickLogin() {
             <el-input class="login-layout-input"
                       placeholder="请输入账号"
                       v-model="dataForm.account"
+                      @keyup.enter="clickLogin()"
             >
               <template #prefix>
                 <el-icon><User/></el-icon>
@@ -85,6 +86,7 @@ function clickLogin() {
                       placeholder="请输入密码"
                       type="password"
                       v-model="dataForm.password"
+                      @keyup.enter="clickLogin()"
             >
               <template #prefix>
                 <el-icon><Lock/></el-icon>

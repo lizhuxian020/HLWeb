@@ -1,7 +1,7 @@
 import type {Ref} from "vue";
 
 export interface TableColumn<T = any> {
-    prop: keyof T | string
+    prop?: keyof T | string
     label: string
     width?: string
     align?: 'left' | 'center' | 'right'
@@ -10,7 +10,10 @@ export interface TableColumn<T = any> {
         column?: TableColumn<T>,
         cellValue?: any,
         index?: number
-    ) => string
+    ) => string,
+    fixed?: 'left' | 'right',
+    clickBtn?: (row: T, index?: number) => void,
+    btnTexts?: Array<string>
 }
 
 export interface Building {
