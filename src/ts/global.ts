@@ -49,7 +49,8 @@ export interface FormButton {
     text: string,
     type?: 'primary' | 'secondary' | 'success' | 'warning' | 'info',
     plain?: boolean,
-    onClick?: (obj: Ref) => void
+    onClick?: (obj: Ref) => void,
+    validate?: boolean
 }
 export interface FormSelectItem {
     label: string,

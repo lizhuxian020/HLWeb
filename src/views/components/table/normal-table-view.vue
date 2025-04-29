@@ -105,7 +105,7 @@ function clickAdd() {
               style="background-color: #4191F1; font-size: 40px"
           >
           {{
-            item?.compute ? item?.compute(scope.row, scope.column, scope.row[item.prop], scope.$index) : defaultFormatter(scope.row, scope.column)
+            item?.compute ? item?.compute(scope.row, scope.column, scope.row[item.prop || ""], scope.$index) : defaultFormatter(scope.row, scope.column)
           }}
           </slot>
         </template>

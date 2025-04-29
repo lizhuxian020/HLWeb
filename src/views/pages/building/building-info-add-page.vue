@@ -2,12 +2,13 @@
 
 import HlFormView from "../../components/form/hl-form-view.vue";
 import type {FormItem, FormSelectItem} from "../../../ts/global";
-import {useRouter} from "vue-router";
-import {onMounted, reactive, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {onBeforeMount, onBeforeUpdate, onMounted, onUpdated, reactive, ref} from "vue";
 import service from "../../../service/http";
 import {ElMessage} from "element-plus";
 
 let router = useRouter()
+let route = useRoute()
 
 let ownerList = reactive([] as FormSelectItem[])
 let formData: FormItem[] = [
@@ -97,6 +98,7 @@ let formData: FormItem[] = [
     buttonsData: [
       {
         text: '提交',
+        validate: true,
         onClick: clickSubmit,
       },
       {
@@ -107,15 +109,22 @@ let formData: FormItem[] = [
     ]
   },
 ]
-
+let initData =ref({})
 
 async function clickSubmit(formData: any) {
   console.log(formData)
 
+  let url = "/buildingInfo/save";
+  let param = formData;
+  if (route.query.id) {
+    url = "/buildingInfo/update"
+    param["buildingId"] = route.query.id
+  }
+
   let {data: result} = await service.request({
     method: "post",
-    url: "/buildingInfo/save",
-    data: formData
+    url: url,
+    data: param
   })
   if (result.flag) {
     router.replace('/home/building/building1')
@@ -128,12 +137,11 @@ function clickCancel() {
   router.back()
 }
 
-onMounted(async () => {
+onBeforeMount(async () => {
   let {data: userList} = await service.request({
     method: 'GET',
     url: '/user/list',
   })
-  console.log(userList)
   if (userList instanceof Array) {
     let selectData = userList.map(item => ({
       label: item.realName,
@@ -141,13 +149,22 @@ onMounted(async () => {
     }))
     ownerList.push(...selectData)
   }
+  if (route.query.id) {
+    let {data: buildingInfo} = await service.request({
+      method: 'GET',
+      url: `/buildingInfo/id/${route.query.id}`,
+    })
+    if (buildingInfo) {
+      initData.value = buildingInfo
+    }
+  }
 })
 
 </script>
 
 <template>
   <div style="padding: 20px">
-    <hl-form-view :form-data="formData"/>
+    <hl-form-view :form-data="formData" :initData="initData"/>
   </div>
 </template>
 

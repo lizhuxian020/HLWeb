@@ -4,6 +4,7 @@ import service from "../../../service/http";
 import type {TableColumn, Building, TableActionButton} from '../../../ts/global'
 import NormalTableView from "../../components/table/normal-table-view.vue";
 import {useRouter} from "vue-router";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 
 const tableData = ref<Building[]>([
@@ -70,8 +71,20 @@ const columns: TableColumn<Building>[] = [
     // width: '300px',
     btnTexts: ["编辑", "删除"],
     clickBtn: (row, idx) => {
-      console.log(row);
-      console.log(idx)
+      if (idx == 0) {
+        router.push({name: "building-info-add", query: {id: row.buildingId}})
+      }
+      if (idx == 1) {
+        ElMessageBox.confirm('确定是否删除', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteItem(row)
+        }).catch(() => {
+          console.log("c")
+        })
+      }
     }
   }
 ]
@@ -87,6 +100,24 @@ async function getData() {
   if (buildingData) {
     tableData.value = buildingData.records;
     total.value = buildingData.total || 0;
+  }
+}
+
+async function deleteItem(row: Building) {
+  let {data: result} = await service.request({
+    method: 'DELETE',
+    url: '/buildingInfo/delete',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: {
+      "buildingId": row.buildingId
+    }
+  })
+  if (result.flag) {
+    ElMessage.success("提交成功")
+  } else {
+    ElMessage.error("提交失败")
   }
 }
 

@@ -8,7 +8,7 @@ export default defineComponent({
 
 <script setup lang="ts">
 import type {FormItem, FormSelectItem, FormButton} from "../../../ts/global";
-import {ref, reactive} from "vue";
+import {ref, reactive, onBeforeMount, onMounted, onBeforeUpdate, onUpdated, watch, computed} from "vue";
 import type {FormInstance} from "element-plus";
 import type { RuleItem } from 'async-validator'
 
@@ -19,6 +19,10 @@ const props = defineProps({
     type: Array<FormItem>,
     default: {}
   },
+  initData: {
+    type: Object,
+    default: {}
+  }
 })
 
 function placeHolder(formItem: FormItem) {
@@ -36,11 +40,14 @@ function generateModel() {
   for (let item of props.formData) {
     if (item.prop) {
       result[item.prop] = item.defaultValue || null
+      if (props.initData && props.initData[item.prop] != undefined) {
+        result[item.prop] = props.initData[item.prop]
+      }
     }
   }
-  return ref(result)
+  return result
 }
-let model = generateModel()
+let model = ref(generateModel())
 
 function isFormSelectItem(obj: any): obj is FormSelectItem {
   return obj && typeof obj === 'object' && 'label' in obj && 'value' in obj
@@ -66,6 +73,10 @@ function onClick(btnData: FormButton) {
     console.log("no")
     return
   }
+  if (!btnData.validate && btnData.onClick) {
+    btnData.onClick(model.value)
+    return
+  }
   formRef.value.validate(valid => {
     if (valid && btnData.onClick) {
       console.log('submit!')
@@ -83,12 +94,33 @@ const decimalNumber = (rule: RuleItem, value: any, callback: (error?: Error) => 
     return callback()
   }
   const regExpRule = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
-  // console.log('进入验证', value, regExpRule.test(value))
   if (!regExpRule.test(value)) {
     return callback(new Error('只能是数字且小数点后最多两位'))
   }
   callback()
 }
+//
+// console.log("son setup")
+//
+// onBeforeMount(() => {
+//   console.log("son before mount")
+// })
+//
+// onMounted(() => {
+//   console.log("son mount")
+// })
+//
+// onBeforeUpdate(() => {
+//   console.log("son before update")
+// })
+//
+// onUpdated(() => {
+//   console.log("son update")
+// })
+
+watch(() => props.initData, (newVal) => {
+  model.value = generateModel();
+})
 
 </script>
 
