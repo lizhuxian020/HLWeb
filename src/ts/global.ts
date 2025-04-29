@@ -22,6 +22,12 @@ export interface Building {
     address: string
 }
 
+export interface User {
+    userId: string
+    account: string
+    realName: string
+}
+
 export interface TableActionButton<T = any> {
     text: string,
     onClick?: () => void

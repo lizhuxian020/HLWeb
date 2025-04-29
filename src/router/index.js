@@ -55,7 +55,15 @@ const layoutRoutes = [
                     {
                         path: 'user1',
                         name: 'user1',
-                        component: () => import('@/views/pages/user-page.vue'),
+                        component: () => import('@/views/pages/user/user-page.vue'),
+                    },
+                    {
+                        path: 'user2',
+                        name: 'user-add-edit',
+                        meta: {
+                            hidden: true,
+                        },
+                        component: () => import('@/views/pages/user/user-add-edit-page.vue'),
                     }
                 ]
             },

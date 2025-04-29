@@ -139,11 +139,15 @@ function clickCancel() {
 
 onBeforeMount(async () => {
   let {data: userList} = await service.request({
-    method: 'GET',
+    method: 'POST',
     url: '/user/list',
+    data: {
+      current: 1,
+      size: 1000
+    }
   })
-  if (userList instanceof Array) {
-    let selectData = userList.map(item => ({
+  if (userList.records && userList.records instanceof Array) {
+    let selectData = userList.records.map((item: any) => ({
       label: item.realName,
       value: item.userId
     }))
