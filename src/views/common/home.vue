@@ -60,6 +60,11 @@ onMounted(() => {
   // onClickSecMenu(secMenu.value[0], 0)
 })
 
+let store = useStore();
+watch(() => route.path, (newValue) => {
+  console.log('newRoute' + newValue)
+})
+
 </script>
 
 <template>
@@ -105,6 +110,16 @@ onMounted(() => {
         </aside>
         <div style="height: 100%; background-color: darkgreen; flex: 1; flex-direction: column;overflow: auto;">
           <section style="height: 100%; background-color: #eeeeee; display: flex; flex-direction: column">
+            <div style="background-color: white; margin-top: 20px; margin-left: 20px; padding: 15px">
+              <el-breadcrumb separator="/">
+                <el-breadcrumb-item :to="{ path: '/' }">homepage</el-breadcrumb-item>
+                <el-breadcrumb-item>
+                  <a href="/">promotion management</a>
+                </el-breadcrumb-item>
+                <el-breadcrumb-item>promotion list</el-breadcrumb-item>
+                <el-breadcrumb-item>promotion detail</el-breadcrumb-item>
+              </el-breadcrumb>
+            </div>
             <router-view/>
           </section>
         </div>

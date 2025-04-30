@@ -5,17 +5,17 @@ import store from "../store";
 const service = axios.create({})
 
 service.interceptors.request.use(config => {
-    console.log('------HTTP_REQUEST : ' + config.method + ' : ' + config.url + '\n' + 'Param: ' + (config.data ? JSON.stringify(config.data) : ""));
+    // console.log('------HTTP_REQUEST : ' + config.method + ' : ' + config.url + '\n' + 'Param: ' + (config.data ? JSON.stringify(config.data) : ""));
     let token = store.getters.user.token;
     config.headers['token'] = token;
     return config;
 }, (error) => {
-    console.log('httpRequestError' + error);
+    // console.log('httpRequestError' + error);
     return Promise.reject(error);
 })
 
 service.interceptors.response.use(async (response) => {
-    console.log('------HTTP_RESPONSE : ' + response.config.method + ' : ' + response.config.url + '\n' + 'Param: ' + (response.config.data ? JSON.stringify(response.config.data) : "") + '\n' + 'Response: ' + (JSON.stringify(response.data)) );
+    // console.log('------HTTP_RESPONSE : ' + response.config.method + ' : ' + response.config.url + '\n' + 'Param: ' + (response.config.data ? JSON.stringify(response.config.data) : "") + '\n' + 'Response: ' + (JSON.stringify(response.data)) );
     if (response.status === 200 && response.data.code === 0) {
         return response.data;
     }
