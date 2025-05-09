@@ -2,63 +2,59 @@ import {createRouter, createWebHashHistory} from "vue-router";
 
 const layoutRoutes = [
     {
-        path: '/',
-        name: 'index',
-        redirect: '/home',
-    },
-    {
         path: '/login',
         name: 'login',
         component: () => import('@/views/common/login.vue'),
     },
     {
-        path: '/home',
+        path: '/',
         name: 'home',
+        redirect: '/user',
         component: () => import('@/views/common/home.vue'),
         children: [
             {
-                path: 'test',
+                path: '/test',
                 name: 'test',
                 children: [
                     {
-                        path: 'test0',
+                        path: '/test0',
                         name: 'test0',
                         component: () => import('@/views/pages/test.vue'),
                     },
                     {
-                        path: 'test1',
+                        path: '/test1',
                         name: 'test1',
                         component: () => import('@/views/pages/test.vue'),
                     },
                     {
-                        path: 'test2',
+                        path: '/test2',
                         name: 'test2',
                         component: () => import('@/views/pages/test.vue'),
                     },
                     {
-                        path: 'test3',
+                        path: '/test3',
                         name: 'test3',
                         component: () => import('@/views/pages/test.vue'),
                     },
                     {
-                        path: 'test4',
+                        path: '/test4',
                         name: 'test4',
                         component: () => import('@/views/pages/test.vue'),
                     }
                 ]
             },
             {
-                path: 'user',
+                path: '/user',
                 name: 'user',
-                redirect: '/home/user/user1',
+                redirect: '/user1',
                 children: [
                     {
-                        path: 'user1',
+                        path: '/user1',
                         name: 'user1',
                         component: () => import('@/views/pages/user/user-page.vue'),
                     },
                     {
-                        path: 'user2',
+                        path: '/user2',
                         name: 'user-add-edit',
                         meta: {
                             hidden: true,
@@ -68,17 +64,17 @@ const layoutRoutes = [
                 ]
             },
             {
-                path: 'building',
+                path: '/building',
                 name: 'building',
-                redirect: '/home/building/building1',
+                redirect: '/building1',
                 children: [
                     {
-                        path: 'building1',
+                        path: '/building1',
                         name: 'building1',
                         component: () => import('@/views/pages/building/building-info-page.vue'),
                     },
                     {
-                        path: 'building2',
+                        path: '/building2',
                         name: 'building-info-add',
                         meta: {
                             hidden: true,
@@ -111,7 +107,6 @@ router.beforeEach( async (to, from, next) => {
     // }
     let data = localStorage.getItem('vuex')
     if (!data) {
-        this.store.dispatch('basic/clearRoute')
         next(`/login?redirect=${to.path}`);
         return;
     }
