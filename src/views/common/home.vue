@@ -65,6 +65,8 @@ watch(() => route.path, (newValue) => {
   console.log('newRoute' + newValue)
 })
 
+let lastRoute = store.getters.basic.lastRoute
+
 </script>
 
 <template>
@@ -112,12 +114,9 @@ watch(() => route.path, (newValue) => {
           <section style="height: 100%; background-color: #eeeeee; display: flex; flex-direction: column">
             <div style="background-color: white; margin-top: 20px; margin-left: 20px; padding: 15px">
               <el-breadcrumb separator="/">
-                <el-breadcrumb-item :to="{ path: '/' }">homepage</el-breadcrumb-item>
-                <el-breadcrumb-item>
-                  <a href="/">promotion management</a>
-                </el-breadcrumb-item>
-                <el-breadcrumb-item>promotion list</el-breadcrumb-item>
-                <el-breadcrumb-item>promotion detail</el-breadcrumb-item>
+                <template v-for="route in store.getters.basic.routes">
+                  <el-breadcrumb-item>{{route}}</el-breadcrumb-item>
+                </template>
               </el-breadcrumb>
             </div>
             <router-view/>

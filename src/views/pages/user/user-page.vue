@@ -5,14 +5,23 @@ import NormalTableView from "../../components/table/normal-table-view.vue";
 import type {TableActionButton, TableColumn, User} from "../../../ts/global";
 import {ElMessageBox} from "element-plus";
 import {useRouter} from "vue-router";
+import {useStore} from "vuex";
 
 let router = useRouter()
-
+let store = useStore()
 const tableData = ref<User[]>([
 ])
 
 function deleteItem(row: User) {
+  console.log(row)
+  store.dispatch("basic/setRoute", "嘿嘿")
+  store.commit("changeRoute", "qwe")
+}
 
+function cancelDelete(row: User) {
+  console.log(row)
+  store.dispatch("basic/setRoute", "呵呵呵")
+  store.commit("changeRoute", "zxc")
 }
 
 const columns: TableColumn<User>[] = [
@@ -46,7 +55,7 @@ const columns: TableColumn<User>[] = [
         }).then(() => {
           deleteItem(row)
         }).catch(() => {
-          console.log("c")
+          cancelDelete(row)
         })
       }
     }

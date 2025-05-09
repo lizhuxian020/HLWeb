@@ -96,14 +96,22 @@ const router = createRouter({
     routes: layoutRoutes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach( async (to, from, next) => {
     let whiteList = ['/login', '/404']
     if (whiteList.indexOf(to.path) !== -1) {
         next();
         return;
     }
-    let data = sessionStorage.getItem('vuex')
+    // /*
+    // 这里需要同步一下localStorage, 保证新开页面, 也能获取
+    //  */
+    // let localSItem = localStorage.getItem('vuex');
+    // if (localSItem) {
+    //     await sessionStorage.setItem('vuex', localSItem)
+    // }
+    let data = localStorage.getItem('vuex')
     if (!data) {
+        this.store.dispatch('basic/clearRoute')
         next(`/login?redirect=${to.path}`);
         return;
     }

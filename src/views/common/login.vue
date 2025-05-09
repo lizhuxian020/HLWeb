@@ -116,7 +116,10 @@ function clickLogin() {
   display: flex;
   align-items: center;
   justify-content: center;
-  //user-select: none;
+  /*
+  用户在其他地方乱点的时候. 不会出现输入的闪动条
+   */
+  user-select: none;
 
   &-content {
     width: 368px;

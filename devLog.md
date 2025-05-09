@@ -81,3 +81,14 @@
 4.30
 1. 做一页面导航栏
    2. 未做完: 重新了解store机制. 看看能不能把每一个route都通过数组存储起来.然后来做导航路径
+
+5.6
+1. 基本上摸鱼, 翻阅了store机制
+   2. https://vuex.vuejs.org/zh/guide/modules.html#%E6%A8%A1%E5%9D%97%E7%9A%84%E5%B1%80%E9%83%A8%E7%8A%B6%E6%80%81
+3. 明天: 了解一下新开页面, 也能重新获取token, 然后正常打开页面
+   4. 5.7: 使用localStorage, 而不是sessionStorage
+
+5.7, 5.8摸鱼了2天
+
+5.9 bad day
+
