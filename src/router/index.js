@@ -15,49 +15,44 @@ const layoutRoutes = [
             {
                 path: '/test',
                 name: 'test',
+                meta: {
+                    title: "测试",
+                },
                 children: [
                     {
                         path: '/test0',
                         name: 'test0',
+                        meta: {
+                            title: "测试",
+                        },
                         component: () => import('@/views/pages/test.vue'),
                     },
-                    {
-                        path: '/test1',
-                        name: 'test1',
-                        component: () => import('@/views/pages/test.vue'),
-                    },
-                    {
-                        path: '/test2',
-                        name: 'test2',
-                        component: () => import('@/views/pages/test.vue'),
-                    },
-                    {
-                        path: '/test3',
-                        name: 'test3',
-                        component: () => import('@/views/pages/test.vue'),
-                    },
-                    {
-                        path: '/test4',
-                        name: 'test4',
-                        component: () => import('@/views/pages/test.vue'),
-                    }
                 ]
             },
             {
                 path: '/user',
                 name: 'user',
-                redirect: '/user1',
+                meta: {
+                    title: "用户",
+                },
+                redirect: '/user-list',
                 children: [
                     {
-                        path: '/user1',
-                        name: 'user1',
+                        path: '/user-list',
+                        name: 'user-list',
+                        meta: {
+                            title: "用户列表",
+                            parentName: "user"
+                        },
                         component: () => import('@/views/pages/user/user-page.vue'),
                     },
                     {
-                        path: '/user2',
+                        path: '/user-add-edit',
                         name: 'user-add-edit',
                         meta: {
-                            hidden: true,
+                            title: "用户新增/编辑",
+                            hiddenInMenu: true,
+                            parentName: "user-list"
                         },
                         component: () => import('@/views/pages/user/user-add-edit-page.vue'),
                     }
@@ -66,18 +61,27 @@ const layoutRoutes = [
             {
                 path: '/building',
                 name: 'building',
-                redirect: '/building1',
+                meta: {
+                    title: "楼栋",
+                },
+                redirect: '/building-list',
                 children: [
                     {
-                        path: '/building1',
-                        name: 'building1',
+                        path: '/building-list',
+                        name: 'building-list',
+                        meta: {
+                            title: "楼栋列表",
+                            parentName: "building",
+                        },
                         component: () => import('@/views/pages/building/building-info-page.vue'),
                     },
                     {
-                        path: '/building2',
+                        path: '/building-info-add',
                         name: 'building-info-add',
                         meta: {
-                            hidden: true,
+                            hiddenInMenu: true,
+                            title: "新增楼栋",
+                            parentName: 'building-list',
                         },
                         component: () => import('@/views/pages/building/building-info-add-page.vue'),
                     }

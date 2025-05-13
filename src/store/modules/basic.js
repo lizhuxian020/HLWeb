@@ -1,28 +1,44 @@
+import router from '../../router'
+
 const state = () => ({
-    // userInfo: {},
-    // token: ''
-    routes: []
+    allRoutes: router.getRoutes(),
+    routePathList: []
 })
 
 const mutations = {
-    ADD_ROUTE(state, route) {
-        state.routes.push(route)
-    },
-    CLEAR_ROUTE(state) {
-        state.routes = [];
+    UPDATE_ROUTE_PATH(state, routePathList) {
+        state.routePathList = routePathList
     }
 }
 
 const actions = {
-    addRoute({ commit, getter }, route) {
-        commit('ADD_ROUTE', route);
-    },
-    clearRoute({ commit }) {
-        commit('CLEAR_ROUTE')
+    async pushNewRoute({ commit, state }, routeName) {
+
+        let getRoute = (routeName, routeList) => {
+            for (const route of routeList) {
+                if (routeName === route.name) {
+                    return route
+                }
+            }
+            return null;
+        }
+
+
+        let routePathList = []
+        let fun = (routeName, routeList) => {
+            let currentRoute = getRoute(routeName, routeList);
+            if (currentRoute) {
+                routePathList.unshift(currentRoute)
+                if (currentRoute.meta && currentRoute.meta.parentName) {
+                    fun(currentRoute.meta.parentName, routeList)
+                }
+            }
+        }
+
+        fun(routeName, state.allRoutes)
+        commit("UPDATE_ROUTE_PATH", routePathList)
+
     }
-    // setToken({ commit }, token) {
-    //     commit('SET_TOKEN', token)
-    // }
 }
 
 export default {

@@ -5,6 +5,7 @@ import type {TableColumn, Building, TableActionButton} from '../../../ts/global'
 import NormalTableView from "../../components/table/normal-table-view.vue";
 import {useRouter} from "vue-router";
 import {ElMessage, ElMessageBox} from "element-plus";
+import {useStore} from "vuex";
 
 
 const tableData = ref<Building[]>([
@@ -90,6 +91,7 @@ const columns: TableColumn<Building>[] = [
 ]
 
 let router = useRouter()
+let store = useStore()
 
 async function getData() {
   let {data: buildingData} = await service.request({

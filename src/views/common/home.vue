@@ -3,7 +3,7 @@ import {useStore} from "vuex";
 import {computed, onMounted, type Ref, ref, watch} from "vue";
 import MainNaviBar from "../layouts/main-navi-bar.vue";
 import {ArrowLeft, User, Expand, Fold, House, Setting} from "@element-plus/icons-vue";
-import {type RouteRecord, type RouteRecordRaw, useRoute, useRouter} from "vue-router";
+import {type RouteLocationRaw, type RouteRecord, type RouteRecordRaw, useRoute, useRouter} from "vue-router";
 
 // const store = useStore();
 // let token = computed(() => {
@@ -21,13 +21,14 @@ let route= useRoute()
 //   console.log(val);
 // })
 let router = useRouter()
+console.log("allRoute = ")
 console.log(router.getRoutes())
 let allRoutes = router.getRoutes()
 let firMenu = allRoutes.filter((route)=>{
   return route.name == "home";
 })[0].children;
 
-let secMenu : Ref<RouteRecordRaw[]> = ref([] as RouteRecordRaw[])
+let secMenu : Ref<RouteRecordRaw[]> = ref([])
 
 onMounted(() => {
   setTimeout(()=>{
@@ -40,8 +41,7 @@ let expand = ref(false);
 function clickArrow() {
   expand.value = !expand.value;
 }
-
-function onClickFirMenu(item: RouteRecordRaw, index: number) {
+ async function onClickFirMenu(item: RouteRecordRaw, index: number) {
   menuActive.value = String(item.name)
   expand.value = true
   secMenu.value = item.children || [];
@@ -49,23 +49,21 @@ function onClickFirMenu(item: RouteRecordRaw, index: number) {
 }
 
 function onClickSecMenu(item: RouteRecordRaw, index: number) {
-  console.log(item)
   router.push({name: item.name, query: {index: index}});
 }
 
 let menuActive = ref("")
 
 onMounted(() => {
-  // onClickFirMenu(firMenu[0], 0)
-  // onClickSecMenu(secMenu.value[0], 0)
 })
 
 let store = useStore();
-watch(() => route.path, (newValue) => {
-  console.log('newRoute' + newValue)
+watch(() => route.name, (newValue) => {
+  /*
+  清空路由, 找到路由, 找到父路由
+   */
+  store.dispatch("basic/pushNewRoute", newValue)
 })
-
-let lastRoute = store.getters.basic.lastRoute
 
 </script>
 
@@ -89,7 +87,7 @@ let lastRoute = store.getters.basic.lastRoute
                   :style="item.name === menuActive ? {backgroundColor: '#1f62b2'} : {}"
               >
                 <el-icon><User/></el-icon>
-                <span>{{item.name}}</span>
+                <span>{{item.meta.title || item.name}}</span>
               </li>
             </ul>
           </nav>
@@ -101,9 +99,9 @@ let lastRoute = store.getters.basic.lastRoute
             >
               <ul style="padding: 0">
                 <li v-for="(item,index) in secMenu" :key="index" style="list-style: none" @click="onClickSecMenu(item, index)">
-                  <el-menu-item :index="String(index)" v-if="!item.meta || !item.meta.hidden">
+                  <el-menu-item :index="String(index)" v-if="!item.meta || !item.meta.hiddenInMenu">
                     <el-icon><House /></el-icon>
-                    <span>{{ item.name }}</span>
+                    <span>{{ item.meta.title || item.name  }}</span>
                   </el-menu-item>
                 </li>
               </ul>
@@ -114,8 +112,10 @@ let lastRoute = store.getters.basic.lastRoute
           <section style="height: 100%; background-color: #eeeeee; display: flex; flex-direction: column">
             <div style="background-color: white; margin-top: 20px; margin-left: 20px; padding: 15px">
               <el-breadcrumb separator="/">
-                <template v-for="route in store.getters.basic.routes">
-                  <el-breadcrumb-item>{{route}}</el-breadcrumb-item>
+                <template v-for="route in store.getters.basic.routePathList">
+                  <el-breadcrumb-item :to="{name: route.name} as RouteLocationRaw">
+                    {{route.meta.title || route.name}}
+                  </el-breadcrumb-item>
                 </template>
               </el-breadcrumb>
             </div>
